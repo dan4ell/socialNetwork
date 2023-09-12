@@ -1,0 +1,36 @@
+{% extends 'template.html' %}
+{% load static %}
+{% block site_title %} Регистрация {% endblock %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'main/css/registration.css' %}">
+{% endblock %}
+{% block title %} Регистрация {% endblock %}
+
+{% block authorization_body %}
+<form method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-field">
+            {{ field.label_tag }}
+            <div class="inputs">
+                {{ field }}
+                {% if field.help_text %}
+                    <img  title="{{field.help_text}}" src="{% static 'main/img/help.png' %}" alt="help">
+                {% else %}
+                     <img  title="Ваша почта" src="{% static 'main/img/help.png' %}" alt="help">
+                {% endif %}
+            </div>
+
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button style="margin-top: 15px;" class="login-button" type="submit">Отправить</button>
+</form>
+
+{% endblock %}

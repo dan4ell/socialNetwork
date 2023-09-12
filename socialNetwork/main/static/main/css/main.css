@@ -1,0 +1,91 @@
+body{
+margin: 0;
+padding: 0;
+padding-top: 5px;
+height: 100%;
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+background: linear-gradient(to bottom left, #52f2d8, #2b71fc);
+}
+input{
+padding: 5px;
+color: #303e47;
+font-weight: 500;
+border-radius: 5px;
+}
+.logo{
+width: 80px;
+height:80px;
+position: absolute;
+cursor: pointer;
+}
+.main-container{
+position: relative;
+color: #303e47;
+display: flex;
+border-radius: 10px;
+box-shadow: 25px 25px 2px 1px rgba(0, 0, 255, .2);
+background: #c7e7fc;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 400px;
+height: 600px;
+}
+.ul-container{
+width: 100%;
+display: flex;
+flex-direction: column;
+margin-left: 200px;
+}
+.ul-container a{
+color: #303e47;
+text-decoration: none;
+}
+.ul-container a:hover{
+color: #2b71fc;
+text-decoration: underline;
+}
+.title{
+display: flex;
+position: absolute;
+width: 100%;
+border-bottom: 3px solid #303e47;;
+top: 5%;
+justify-content: center;
+align-items: top;
+font-size: 30px;
+font-weight: 550;
+}
+.login-button{
+width: 100%;
+border-radius: 5px;
+background: rgba(0, 0, 255, .2);
+height: 50px;
+font-weight: 500;
+border: none;
+}
+.login-button:hover{
+color: white;
+background: rgba(0, 0, 255, .6);
+}
+.footer {
+        margin-top: 250px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        background-color: none;
+        padding: 20px;
+        font-size: .8em;
+    }
+.footer a{
+color: black;
+margin-left: 10px;
+text-decoration: none;
+}
+.footer p{
+ margin-left: 20px;
+}

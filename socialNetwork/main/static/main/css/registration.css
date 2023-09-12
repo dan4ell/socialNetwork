@@ -1,0 +1,29 @@
+.form-field {
+display: flex;
+justify-content: center;
+flex-direction: column;
+align-items: center;
+}
+.main-container{
+height: 700px;
+}
+form img{
+cursor: pointer;
+width: 29px;
+margin-left: 5px;
+height: 29px;
+display: flex;
+align-items: bottom;
+}
+label{
+font-weight: 500;
+
+}
+.inputs{
+display: flex;
+justify-content: center;
+}
+.errorlist{
+text-decoration: underline;
+font-size: .9em;
+}

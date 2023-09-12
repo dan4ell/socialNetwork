@@ -1,0 +1,20 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% block site_title %} Регистрация {% endblock %}
+
+{% block title %} Регистрация {% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'main/css/reset_password_done.css' %}">
+{% endblock %}
+
+{% block authorization_body %}
+<div style="width: 80%;margin-top: 15px;display: flex;justify-content: center;">
+    <p style="font-weight: 500"> Ваш аккаунт успешно активирован
+</p>
+</div>
+    <a style="margin-top: 15px;"  href="/" class="text-center back-button">Войти</a>
+
+
+{% endblock %}}
