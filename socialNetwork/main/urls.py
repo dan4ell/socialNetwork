@@ -1,9 +1,10 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
+from .forms import CustomCreationForm
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-
+from django_registration.backends.activation.views import RegistrationView
 class CustomLogoutView(auth_views.LogoutView):
     template_name = 'registration/logout.html'
     def dispatch(self, request, *args, **kwargs):
@@ -31,6 +32,7 @@ class CustomResetPasswordConfirm(auth_views.PasswordResetConfirmView):
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('accounts/register/', RegistrationView.as_view(form_class=CustomCreationForm), name='register'),
     path('accounts/', include('django_registration.backends.activation.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/exit/', CustomLogoutView.as_view(), name='customLogout'), #accouts/logout зарезервировано
