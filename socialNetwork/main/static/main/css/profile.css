@@ -1,6 +1,10 @@
 body{
-    background-color: #f9fafb;
-    margin-top:20px;}
+    background: linear-gradient(to bottom left, #52f2d8, #2b71fc);
+    margin-top:20px;
+    }
+.container{
+min-width: 800px;
+}
 
 .profile-page .profile-header {
     box-shadow: 0 0 10px 0 rgba(183, 192, 206, 0.2);
@@ -17,38 +21,18 @@ body{
     margin-bottom: 0;
 }
 
-@media (max-width: 767px) {
-    .profile-page .profile-header .cover figure {
-        height: 110px;
-        overflow: hidden;
-    }
-}
 
-@media (min-width: 2400px) {
-    .profile-page .profile-header .cover figure {
-        height: 280px;
-        overflow: hidden;
-    }
-}
+
+
 
 .profile-page .profile-header .cover figure img {
     border-radius: .25rem .25rem 0 0;
     width: 100%;
 }
 
-@media (max-width: 767px) {
-    .profile-page .profile-header .cover figure img {
-        -webkit-transform: scale(2);
-        transform: scale(2);
-        margin-top: 15px;
-    }
-}
 
-@media (min-width: 2400px) {
-    .profile-page .profile-header .cover figure img {
-        margin-top: -55px;
-    }
-}
+
+
 
 .profile-page .profile-header .cover .gray-shade {
     position: absolute;
@@ -74,11 +58,7 @@ body{
     width: 100px;
 }
 
-@media (max-width: 767px) {
-    .profile-page .profile-header .cover .cover-body .profile-pic {
-        width: 70px;
-    }
-}
+
 
 .profile-page .profile-header .cover .cover-body .profile-name {
     font-size: 20px;
@@ -106,6 +86,11 @@ body{
     color: #000;
     -webkit-transition: all .2s ease;
     transition: all .2s ease;
+    text-decoration: none;
+    margin-left: 2px;
+}
+.profile-page .profile-header .header-links ul li{
+    margin-left: 20px;
 }
 
 .profile-page .profile-header .header-links ul li:hover,
@@ -228,4 +213,59 @@ left: 0;
 .add-photo img{
 width: 25px;
 height: 25px;
+}
+.edit_profile-button{
+width: 100%;
+border-radius: 5px;
+background: rgba(0, 0, 255, .2);
+height: 50px;
+font-weight: 500;
+border: none;
+color: #303e47;
+}
+.edit_profile-button:hover{
+color: white;
+background: rgba(0, 0, 255, .6);
+}
+.edit_profile-form{
+width: 100%;
+}
+.form-label{
+font-weight: 400;
+}
+.form-input{
+width: 100%;
+padding: 5px;
+color: #303e47;
+font-weight: 500;
+border-radius: 5px;
+}
+.form-area{
+padding: 5px;
+color: #303e47;
+font-weight: 500;
+border-radius: 5px;
+}
+.save-btn:hover{
+color: #40f71b;
+}
+.back-btn:hover{
+color: black;
+}
+.status-span{
+max-width: 505.45px;
+padding-bottom: 15px;
+}
+.status-link{
+text-decoration: none;
+font-weight: 600;
+color: black;
+letter-spacing: 5px;
+margin-left: 5px;
+}
+.dropdown-text{
+margin-left: 10px;
+}
+#add_news{
+height: 100px;
 }

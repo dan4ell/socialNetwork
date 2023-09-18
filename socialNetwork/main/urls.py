@@ -43,5 +43,4 @@ urlpatterns = [
     path('accounts/pw_reset_is_done', views.reset_is_done, name='resetIsDone'),
     path('accounts/profile/', views.redirect_profile), #redirect to profile without /accounts network
     path('profile/', views.profile, name='profile'),
-    path('edit_profile/', views.edit_profile, name='edit_profile')
 ]
