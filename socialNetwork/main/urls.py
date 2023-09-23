@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 from .forms import CustomCreationForm
@@ -43,4 +45,6 @@ urlpatterns = [
     path('accounts/pw_reset_is_done', views.reset_is_done, name='resetIsDone'),
     path('accounts/profile/', views.redirect_profile), #redirect to profile without /accounts network
     path('profile/', views.profile, name='profile'),
-]
+    path('profile/<str:user>', views.user_profile, name='userprofile')
+] + static(settings.MEDIA_URL,
+           document_root=settings.MEDIA_ROOT)

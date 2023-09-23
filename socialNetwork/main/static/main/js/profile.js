@@ -1,11 +1,10 @@
 aboutLink = document.getElementById('aboutLink');
-cardBody = document.getElementsByClassName('card-body')[0];
+cardBody = document.getElementById('defaultProfile')
 aboutLink.addEventListener('click', function(event){
 event.preventDefault();
 var computedStyle = window.getComputedStyle(cardBody);
 var borderValue = computedStyle.getPropertyValue('border')
 var shadowValue = computedStyle.getPropertyValue('box-shadow')
-cardBody.style.border = '1px solid #303e47'
 cardBody.style.boxShadow = '0 0 35px #303e47'
 setTimeout(function(){
 cardBody.style.border = "0px none rgb(33, 37, 41)"
@@ -74,9 +73,47 @@ function deletePrevent(){
     }
 }
 
+// photos
+function checkPhotos(){
+    photosLink = document.getElementById('myPhotos')
+    photosBlock = document.getElementById('photosBlock')
+
+    photosLink.onclick = function(event){
+        photosBlock.scrollIntoView({behavior: 'smooth'})
+        photosBlock.style.boxShadow = '0 0 35px #303e47';
+        setTimeout(function(){
+            photosBlock.style.boxShadow = 'none'
+        }, 1000)
+        event.preventDefault()
+    }
+}
+
+// friends
+function getFriend(){
+    var friendLink = document.getElementById('Friends');
+    var friendBlock = document.getElementById('friendBlock');
+    friendLink.onclick = function(event){
+        event.preventDefault()
+        if(friendBlock){
+            friendBlock.scrollIntoView({behavior: 'smooth'})
+            friendBlock.style.boxShadow = '0 0 35px #303e47';
+            setTimeout(function(){
+                friendBlock.style.boxShadow = 'none';
+            }, 1000)
+        }else{
+            alert('У вас нет друзей')
+
+        }
+    }
+
+}
+
+
 document.addEventListener("DOMContentLoaded", function(){
 status()
 viewProfile()
 deletePrevent()
+getFriend()
+checkPhotos()
 });
 

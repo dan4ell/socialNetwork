@@ -1,7 +1,7 @@
 body{
-    background: linear-gradient(to bottom left, #52f2d8, #2b71fc);
-    margin-top:20px;
-    }
+    zoom: 125%;
+    background:linear-gradient(to bottom left, #52f2d8, #2b71fc);
+}
 .container{
 min-width: 800px;
 }
@@ -55,7 +55,9 @@ min-width: 800px;
 
 .profile-page .profile-header .cover .cover-body .profile-pic {
     border-radius: 50%;
+    margin-left: 18px;
     width: 100px;
+    height: 100px;
 }
 
 
@@ -211,8 +213,8 @@ bottom: 0;
 left: 0;
 }
 .add-photo img{
-width: 25px;
-height: 25px;
+width: 35px;
+height: 35px;
 }
 .edit_profile-button{
 width: 100%;
@@ -268,4 +270,22 @@ margin-left: 10px;
 }
 #add_news{
 height: 100px;
+}
+.link-hover a:hover,
+.link-hovered:hover{
+    color: #727cf5;
+}
+.delete-photo{
+border: none;
+position: absolute;
+top: 0;
+right:0;
+background: none;
+}
+.ml{
+margin-left: 10px;
+}
+.user-link{
+text-decoration: none;
+color: #212529;
 }

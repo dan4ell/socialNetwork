@@ -23,7 +23,7 @@ class UserNewsForm(ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(UserNewsForm, self).__init__(*args, **kwargs) # вызываем init родительского класса
-    news = forms.CharField(max_length=500, required=True, widget=forms.Textarea(attrs={'placeholder': 'Добавьте новость...', 'class': 'form-area', 'style': 'height: 200px;'}), label='')
+    news = forms.CharField(max_length=500, required=True, widget=forms.Textarea(attrs={'placeholder': 'Добавьте новость...', 'class': 'form-area', 'style': 'height: 120px;'}), label='')
     class Meta:
         model = News
         fields = ['news',]
@@ -34,3 +34,15 @@ class UserNewsForm(ModelForm):
         if commit:
             news.save()
         return news
+
+class UserAvatarForm(ModelForm):
+    avatar = forms.ImageField(
+        widget=forms.ClearableFileInput(
+            attrs={'class': 'avatar'},
+        )
+    )
+    class Meta:
+        model = CustomUser
+        fields = ['avatar']
+
+

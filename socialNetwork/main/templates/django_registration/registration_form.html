@@ -32,5 +32,7 @@
     {% endfor %}
     <button style="margin-top: 15px;" class="login-button" type="submit">Отправить</button>
 </form>
-
+<div style="margin-top: 14px;">
+    <p>Есть аккаунт? <a class="link" href="{% url 'login' %}">Войти</a></p>
+</div>
 {% endblock %}

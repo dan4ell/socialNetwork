@@ -7,15 +7,16 @@
     <link rel="stylesheet" href="{% static 'main/css/profile.css'%}">
     <script src="{% static 'main/js/profile.js' %}" defer></script>
     <script src="{%static 'main/js/edit_profile.js' %}" defer></script>
+    {% block links %} {% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <title>Document</title>
+    <title>{{user.username}}</title>
 </head>
 <body>
-<div class="container">
-<div class="profile-page tx-13">
-    <div class="row">
-        <div class="col-12 grid-margin">
-            <div class="profile-header">
+<div  class="container">
+<div  class="profile-page tx-13">
+    <div  class="row">
+        <div  class="col-12 grid-margin">
+            <div style="border: none;" class="profile-header">
                 <div class="cover">
                     <div class="gray-shade"></div>
                     <figure>
@@ -23,23 +24,31 @@
                     </figure>
                     <div class="cover-body d-flex justify-content-between align-items-center">
                         <div style="display: flex;justify-content:center;position: relative;align-items: center;">
-                            <img class="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="profile">
-                            <a class="add-photo" href=""><img title="Добавить фото" src="{% static 'main/img/add-photo.png' %}" alt=""></a>
+                            <img class="profile-pic" src='{{user.avatar.url}}' alt="profile">
+                                <div style="display: flex;flex-direction:column;">
+                                    <button title="Изменить аватарку" style="border:none; background: none;" class="add-photo d-none-button" data-bs-toggle="modal" data-bs-target="#avatarModal" type="button"><img
+                                    src="{% static 'main/img/add-photo.png' %}" alt=""></button>
+                                </div>
+
                             <div style="display: flex;flex-direction: column; align-items: left; justify-content: center; margin-left: 10px;">
                                 <span style="margin: 0;" class="profile-name">{{user.username}}</span>
                             <span class="status-span" id="status" style="font-size: 0.9em;">{{ user.about }}</span>
                             </div>
-
                         </div>
                         <div class=" d-md-block">
                             <a href="{% url 'customLogout' %}" class="exit-btn btn-icon-text btn-edit-profile">
-                                <img style="margin-right: 5px; width: 20px; height: 20px;" src="{% static 'main/img/exit.png' %}" alt=""> Выйти
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+                                  <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+                                </svg>
+                                <span>Выйти</span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="header-links">
-                    <ul class="links d-flex align-items-center mt-3 mt-md-0">
+                <div class="header-links d-none-user">
+                    {% block header_links %}
+                    <ul class="links d-flex align-items-center mt-3 mt-md-0 ">
                         <li class="header-link-item d-flex align-items-center active">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-columns mr-1 icon-md">
                                 <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"></path>
@@ -60,7 +69,13 @@
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
-                            <a class="pt-1px d-none d-md-block" href="#">Друзья</a>
+                            <a class="pt-1px d-none d-md-block" id="Friends" href="#">Друзья</a>
+                        </li>
+                        <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                            </svg>
+                            <a class="pt-1px d-none d-md-block" id="Notifications" href="#">Уведомления</a>
                         </li>
                         <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image mr-1 icon-md">
@@ -68,7 +83,7 @@
                                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
-                            <a class="pt-1px d-none d-md-block" href="#">Фотографии</a>
+                            <a class="pt-1px d-none d-md-block" id="myPhotos" href="#">Фотографии</a>
                         </li>
                         <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video mr-1 icon-md">
@@ -78,6 +93,7 @@
                             <a class="pt-1px d-none d-md-block" href="#">Видео</a>
                         </li>
                     </ul>
+                    {% endblock %}
                 </div>
             </div>
         </div>
@@ -127,7 +143,7 @@
                                     <circle cx="5" cy="12" r="1"></circle>
                                 </svg>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="dropdown-menu link-hover dropdown-d-none" aria-labelledby="dropdownMenuButton">
                                 <a id="editProfileBtn" class="dropdown-item d-flex align-items-center" href="#">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 icon-sm mr-2">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -163,7 +179,7 @@
                         <p class="text-muted">{{ user.residence }}</p>
                     </div>
                     {% endif %}
-                    <div style="display: none;"  id="userEmail" class="mt-3">
+                    <div  id="userEmail" class="mt-3">
                         <label class="tx-11 font-weight-bold mb-0 text-uppercase">Email:</label>
                         <p class="text-muted">{{user.email}}</p>
                     </div>
@@ -178,19 +194,23 @@
         <!-- left wrapper end -->
         <!-- middle wrapper start -->
         <div class="col-md-8 col-xl-6 middle-wrapper">
-               <div class="row">
-                <div style="background: none;border-radius: 10px;" class="col-md-12 grid-margin">
-                    <div style="" class="card rounded">
+            {% block create_news %}
+               <div class="row d-none-user ">
+                <div style="background: none;border-radius: 10px;" class="col-md-12 grid-margin ">
+                    <div style="" class="card rounded ">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
-                                    <div style="padding: 0;" class="ml-2">
-                                        <p style="margin-bottom: 0;margin-left: 5px;">{{user.username}}</p>
+                                    <img class="img-xs rounded-circle" src="{{user.avatar.url}}" alt="">
+                                    <div class="ml">
+                                        <a class="user-link" href="{% url 'profile' %}">
+                                            <p  style="margin-bottom: 0;">{{user.username}}</p>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="card-body">
                             <form method="post">
                                 {% csrf_token %}
@@ -206,8 +226,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                 </div>
             </div>
+            {% endblock %}
             {% for news in user.news.all %}
             {% if news.news %}
             <div class="row">
@@ -216,8 +237,8 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
-                                    <div style="padding: 0;" class="ml-2">
+                                    <img class="img-xs rounded-circle" src="{{user.avatar.url}}" alt="">
+                                    <div style="padding: 0;" class="ml">
                                         <p style="margin-bottom: 0; margin-top: 10px;">{{user.username}}</p>
                                         <p class="tx-11 text-muted">{{news.time_created}}</p>
                                     </div>
@@ -234,16 +255,14 @@
                                         <form method="post">
                                             {% csrf_token %}
                                             <input type="hidden" name="newsId" value="{{ news.id }}">
-                                            <button type="submit" name="delete-news" style="border: none; background: none;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-meh icon-sm mr-2">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <line x1="8" y1="15" x2="16" y2="15"></line>
-                                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                            </svg> <span class="">Delete</span></button>
+                                            <button class="link-hovered" type="submit" name="delete-news" style="border: none; background: none;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+</svg> <span>Удалить</span></button>
                                         </form>
                                         <button class="dropdown-item d-flex align-items-center" >
-
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -256,7 +275,7 @@
                                 <form class="d-flex align-items-top text-muted" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="news_id" value="{{ news.id }}">
-                                     <button name="likeBtn" style="border: none; background: none;height: 30px;" type="submit" class="d-flex align-items-top text-muted mr-4">
+                                     <button title="Понравилось пользователям: {% for like_user in news.user_liked.all %}{{like_user}}, {% endfor %}" name="likeBtn" style="border: none; background: none;height: 30px;" type="submit" class="d-flex align-items-top text-muted mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart icon-md">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                     </svg>
@@ -290,75 +309,100 @@
         <!-- right wrapper start -->
         <div class="d-none d-xl-block col-xl-3 right-wrapper">
             <div class="row">
+
+            {% if photos_list %}
+
                 <div class="col-md-12 grid-margin">
                     <div class="card rounded">
-                        <div class="card-body">
-                            <h6 class="card-title">latest photos</h6>
+                        <div id="photosBlock" class="card-body">
+                            <h6 class="card-title">Фотографии</h6>
                             <div class="latest-photos">
                                 <div class="row">
+                                    {% for photo in photos_list %}
                                     <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                                        <figure style="position: relative;">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="photo_id" value="{{photo.id}}">
+                                                <button title="Удалить фото" name="deletePhoto" class="delete-photo" type="submit">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-octagon-fill" viewBox="0 0 16 16">
+                                                      <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zm-6.106 4.5L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                                                    </svg>
+                                                </button>
+                                            <a  href="{{ photo.photos }}" target="_blank">
+                                                <img class="img-fluid" src="{{photo.photos}}" alt="">
+                                            </a>
+                                            </form>
                                         </figure>
                                     </div>
-                                    <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure>
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure class="mb-0">
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure class="mb-0">
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <figure class="mb-0">
-                                            <img class="img-fluid" src="https://bootdey.com/img/Content/avatar/avatar9.png" alt="">
-                                        </figure>
-                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 grid-margin">
+                {% endif %}
+
+                  <div  class="col-md-12 grid-margin">
+                    <div id="friendBlock" class="card rounded">
+                        <div class="card-body">
+                            <h6 class="card-title">Друзья</h6>
+                            {% if friendship %}
+                            {% for friend in friendship %}
+                            <div>
+                                <form class="d-flex justify-content-between mb-2 pb-2 border-bottom" method="post">
+                                  {% csrf_token %}
+                                <div class="d-flex align-items-center hover-pointer">
+                                        <input type="hidden" name="friend_id" value="{{ friend.id }}">
+                                        <img class="img-xs rounded-circle" src="{{ friend.friend.avatar.url }}" alt="">
+                                        <div style="padding-top: 10px; padding-left: 10px;" class="ml-2">
+                                            <a class="user-link" href="{% url 'userprofile' user=friend.friend.username %}"><p>{{friend.friend}}</p></a>
+                                        </div>
+                                </div>
+                                <button title="Удалить из друзей" type="submit" name="deleteFriend" class="btn btn-icon d-none-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-minus" data-toggle="tooltip" title="" data-original-title="Disconnect">
+                                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                      <circle cx="8.5" cy="7" r="4"></circle>
+                                      <line x1="30" y1="11" x2="19" y2="11"></line>
+                                    </svg>
+                                </button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            {% if user != request.user %}
+                             <div style="margin-top: 20px;" class="d-flex align-items-center hover-pointer">
+                                        <p>У {{user.username}} нет друзей</p>
+                                </div>
+                            {% else %}
+                            <div style="margin-top: 20px;" class="d-flex align-items-center hover-pointer">
+                                        <p>У Вас нет друзей</p>
+                                </div>
+                            {% endif %}
+                          {% endif %}
+                        </div>
+                    </div>
+                  </div>
+
+                {% block recommended_friends %}
+                {% if all_value_users > 1 %}
+                <div class="col-md-12 grid-margin d-none-user">
                     <div class="card rounded">
                         <div class="card-body">
-                            <h6 class="card-title">suggestions for you</h6>
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                            <h6 class="card-title">Возможно вы знакомы</h6>
+                            {% for profile in user_list %}
+                                {% if profile.username != user.username %}
+                            <div>
+                                <form class="d-flex justify-content-between mb-2 pb-2 border-bottom" method="post">
+                                  {% csrf_token %}
                                 <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
+                                        <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                        <img class="img-xs rounded-circle" src="{{ profile.avatar.url }}" alt="">
+                                        <div style="padding-top: 10px; padding-left: 10px;" class="ml-2">
+                                            <a title="Перейти в профиль {{profile.username}}" class="user-link" href="{% url 'userprofile' user=profile.username %}"><p>{{profile.username}}</p></a>
+                                        </div>
                                 </div>
-                                <button class="btn btn-icon">
+                                <button title="Добавить в друзья" type="submit" name="addFriend" class="btn btn-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
                                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="8.5" cy="7" r="4"></circle>
@@ -366,102 +410,45 @@
                                         <line x1="23" y1="11" x2="17" y2="11"></line>
                                     </svg>
                                 </button>
+                                </form>
                             </div>
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
-                                </div>
-                                <button class="btn btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
-                                </div>
-                                <button class="btn btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
-                                </div>
-                                <button class="btn btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
-                                </div>
-                                <button class="btn btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="d-flex align-items-center hover-pointer">
-                                    <img class="img-xs rounded-circle" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="">
-                                    <div class="ml-2">
-                                        <p>Mike Popescu</p>
-                                        <p class="tx-11 text-muted">12 Mutual Friends</p>
-                                    </div>
-                                </div>
-                                <button class="btn btn-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus" data-toggle="tooltip" title="" data-original-title="Connect">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="8.5" cy="7" r="4"></circle>
-                                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                                    </svg>
-                                </button>
-                            </div>
-
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
+                {% endblock %}
             </div>
         </div>
         <!-- right wrapper end -->
     </div>
 </div>
 </div>
+
+<!--modal window here-->
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+       <form enctype="multipart/form-data" method="post">
+           {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="avatarModalLabel">Измените аватарку</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+              {{avatar_form.as_p}}
+          <input type="hidden" name="avatar-url" value="{{ user.avatar.url }}">
+      </div>
+      <div class="modal-footer">
+<!--        <button style="width: 30%; height: 45px;" type="button" class="edit_profile-button back-btn" data-bs-dismiss="modal">Закрыть</button>-->
+        <button style="width: 30%; height: 45px;" type="submit" name="addAvatar" class="edit_profile-button save-btn">Сохранить</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

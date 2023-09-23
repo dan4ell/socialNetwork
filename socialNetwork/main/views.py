@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-from .forms import UserChangeForm, UserNewsForm
-from .models import News
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .forms import UserChangeForm, UserNewsForm, UserAvatarForm
+from .models import News, CustomUser, Friendship, Photos
 def index(request):
     return redirect('profile')
 
@@ -14,11 +15,18 @@ def reset_is_done(request):
 
 def redirect_profile(request):
     return redirect('profile')
+
 @login_required
 def profile(request):
     user = request.user
     form = UserChangeForm(instance=user)
     news_form = UserNewsForm(user=user)
+    all_value_users = CustomUser.objects.all().count()
+    user_list = CustomUser.objects.all()
+    friendship = user.friends.all() # с помощью related_name = 'friends' получаем друзей юзера
+    avatar_form = UserAvatarForm(instance=user)
+    photos = Photos(user=user)
+    photos_list = Photos.objects.filter(user=user) # ищем по юзеру его фото чтобы не перебирать все фото в БД
     if request.method == 'POST':
         if 'save' in request.POST:
             form = UserChangeForm(request.POST, instance=user)
@@ -34,10 +42,17 @@ def profile(request):
                 print(form.errors)
         if 'likeBtn' in request.POST:
             news_id = request.POST.get('news_id')
-            news = get_object_or_404(News, id=news_id)
-            news.likes += 1
-            news.user_liked = user.username # добавляем юзернейм лайкнувшего, доделатЬ!
-            news.save()
+            news = News.objects.get(id=news_id)
+            if user in news.user_liked.all():
+                news.likes -= 1
+                news.user_liked.remove(user)
+                news.save()
+                return redirect('profile')
+            else:
+                news.likes += 1
+                news.user_liked.add(user) # добавляем юзернейм лайкнувшего, доделатЬ!
+                news.save()
+                return redirect('profile')
         if 'addNews' in request.POST:
             form = UserNewsForm(user=user, data=request.POST)
             if form.is_valid():
@@ -49,6 +64,72 @@ def profile(request):
             news = News.objects.filter(id=news_id)
             news.delete()
             return redirect('profile')
-    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form})
+        if 'addFriend' in request.POST:
+            friend_id = request.POST.get('profile_id')
+            friend = get_object_or_404(CustomUser, id=friend_id)
+            if user != friend:
+                try:
+                    friendship = Friendship(user=user, friend=friend)
+                    friendship.save()
+                    return redirect('profile')
+                except Exception as e:
+                    print(e)
+                    return redirect('profile')
+        if 'deleteFriend' in request.POST:
+            friend_id = request.POST.get('friend_id')
+            friend = get_object_or_404(Friendship, id=friend_id) # или friend = Friendship.objects.filter(id=friend_id)
+            friend.delete()
+            return redirect('profile')
+        if 'addAvatar' in request.POST:
+            form = UserAvatarForm(request.POST, request.FILES, instance=user)
+            if form.is_valid():
+                avatar_url = request.POST.get('avatar-url')
+                photos.photos = avatar_url
+                photos.save()
+                form.save()
+                return redirect('profile')
+            else:
+                print(form.errors)
+            return redirect('profile')
+        if 'deletePhoto' in request.POST:
+            photo_id = request.POST.get('photo_id')
+            photo = Photos.objects.filter(id=photo_id)
+            photo.delete()
+            return redirect('profile')
+    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users})
+
+def user_profile(request, user):
+    current_user = CustomUser.objects.get(username=user)
+    main_user = request.user
+    news_form = UserNewsForm(user=current_user)
+    if request.user != current_user:
+        friendship = current_user.friends.all()
+        photos_list = Photos.objects.filter(user=current_user)
+        if request.method == 'POST':
+            if 'addNews' in request.POST:
+                form = UserNewsForm(user=current_user, data=request.POST)
+                if form.is_valid():
+                    form.news = request.POST['news']
+                    form.save()
+                    url = reverse('userprofile', args=[current_user.username])
+                    return HttpResponseRedirect(url)
+            if 'likeBtn' in request.POST:
+                news_id = request.POST.get('news_id')
+                news = News.objects.get(id=news_id)
+                if main_user in news.user_liked.all():
+                    news.likes -= 1
+                    news.user_liked.remove(main_user)
+                    news.save()
+                    url = reverse('userprofile', args=[current_user.username])
+                    return HttpResponseRedirect(url)
+                else:
+                    news.likes += 1
+                    news.user_liked.add(main_user)
+                    news.save()
+                    url = reverse('userprofile', args=[current_user.username])
+                    return HttpResponseRedirect(url)
+        return render(request, 'login_user/user_profile.html', {'user': current_user, 'friendship': friendship, 'photos_list': photos_list, 'news': news_form, 'main_user': main_user})
+    else:
+        return redirect('profile')
 
 # Create your views here.
