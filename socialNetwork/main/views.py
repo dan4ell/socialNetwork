@@ -4,7 +4,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import UserChangeForm, UserNewsForm, UserAvatarForm
-from .models import News, CustomUser, Friendship, Photos
+from .models import News, CustomUser, Friendship, Photos, Notifications
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django_registration.signals import user_registered, user_activated
+from django.contrib.auth import get_user_model
 def index(request):
     return redirect('profile')
 
@@ -22,11 +25,16 @@ def profile(request):
     form = UserChangeForm(instance=user)
     news_form = UserNewsForm(user=user)
     all_value_users = CustomUser.objects.all().count()
-    user_list = CustomUser.objects.all()
+    user_list = CustomUser.objects.exclude(friends_user__user=user)
+    user_list_count = CustomUser.objects.exclude(friends_user__user=user).count()
+    print(user_list)
     friendship = user.friends.all() # с помощью related_name = 'friends' получаем друзей юзера
     avatar_form = UserAvatarForm(instance=user)
     photos = Photos(user=user)
     photos_list = Photos.objects.filter(user=user) # ищем по юзеру его фото чтобы не перебирать все фото в БД
+    recipient = user
+    user_notifications = Notifications.objects.filter(recipient=recipient)
+    count_notifications = Notifications.objects.filter(recipient=recipient, is_read=False).count()
     if request.method == 'POST':
         if 'save' in request.POST:
             form = UserChangeForm(request.POST, instance=user)
@@ -58,11 +66,15 @@ def profile(request):
             if form.is_valid():
                 form.news = request.POST['news']
                 form.save()
+                message = f'{user}, запись успешно создана'
+                Notifications.objects.create(recipient=user, message=message)
                 return redirect('profile')
         if 'delete-news' in request.POST:
             news_id = request.POST.get('newsId')
             news = News.objects.filter(id=news_id)
             news.delete()
+            message = f'{user}, запись удалена'
+            Notifications.objects.create(recipient=user, message=message)
             return redirect('profile')
         if 'addFriend' in request.POST:
             friend_id = request.POST.get('profile_id')
@@ -96,7 +108,13 @@ def profile(request):
             photo = Photos.objects.filter(id=photo_id)
             photo.delete()
             return redirect('profile')
-    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users})
+        if 'readAll' in request.POST:
+            notifications = Notifications.objects.filter(recipient=user)
+            for notification in notifications:
+                notification.is_read = True
+                notification.save()
+            return redirect('profile')
+    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications})
 
 def user_profile(request, user):
     current_user = CustomUser.objects.get(username=user)
@@ -132,4 +150,28 @@ def user_profile(request, user):
     else:
         return redirect('profile')
 
+def notifications_user_registered(sender, user, request, **kwargs):
+    UserModel = get_user_model()
+    user = UserModel.objects.get(username=user.username)
+    message = f'{user}, ваш аккаунт внесён в базу'
+    Notifications.objects.create(recipient=user, message=message)
+
+def notifications_user_activated(sender, user, request, **kwargs):
+    UserModel = get_user_model()
+    user = UserModel.objects.get(username=user.username)
+    message =f'{user}, ваш аккаунт успешно активирован'
+    Notifications.objects.create(recipient=user, message=message)
+def notification_user_logged(sender, user, request, **kwargs):
+    message = f'{request.user}, в ваш аккаунт был выполнен вход'
+    Notifications.objects.create(recipient=request.user, message=message)
+    return redirect('profile')
+def notification_user_logout(sender, user, request, **kwargs):
+    message = f'{request.user}, Вы вышли из аккаунта'
+    Notifications.objects.create(recipient=request.user, message=message)
+    return redirect('profile')
+
+user_registered.connect(notifications_user_registered)
+user_activated.connect(notifications_user_activated)
+user_logged_in.connect(notification_user_logged)
+user_logged_out.connect(notification_user_logout)
 # Create your views here.
