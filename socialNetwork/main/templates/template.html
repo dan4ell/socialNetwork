@@ -13,13 +13,16 @@
 <body>
 <!--<a class="logo" href="/"><img title="socialNetwork" class="logo" src="{% static 'main/img/socialNetworkLogo.png' %}" alt=""></a>-->
 <div class=" main-container">
-    <div class="title">
+    <div class="form-container">
+        <div class="title">
 
         <p>{% block title %} {% endblock %}</p>
-    </div>
+        </div>
       {% block authorization_body %}
 
       {% endblock %}
+    </div>
+
 
 </div>
 

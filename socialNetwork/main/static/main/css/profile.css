@@ -4,6 +4,8 @@ body{
 }
 .container{
 min-width: 800px;
+min-height: 800px;
+
 }
 
 .profile-page .profile-header {
@@ -288,4 +290,42 @@ margin-left: 10px;
 .user-link{
 text-decoration: none;
 color: #212529;
+}
+.middle-wrapper::-webkit-scrollbar {
+  width: 0.4em; /* Ширина полоски прокрутки */
+}
+
+.middle-wrapper::-webkit-scrollbar-track {
+  background-color: #c7e7fc; /* Цвет фона полоски прокрутки */
+  border-radius: 0.25em;
+}
+
+.middle-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 255, .3); /* Цвет полоски прокрутки */
+  border-radius: 0.25em; /* Радиус скругления углов полоски прокрутки */
+}
+
+.middle-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Цвет полоски прокрутки при наведении */
+}
+.scroll-div{
+max-height: 350px;
+overflow-y: auto;
+}
+.scroll-div::-webkit-scrollbar {
+  width: 0.4em; /* Ширина полоски прокрутки */
+}
+
+.scroll-div::-webkit-scrollbar-track {
+  background-color: #c7e7fc; /* Цвет фона полоски прокрутки */
+  border-radius: 0.25em;
+}
+
+.scroll-div::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 255, .3); /* Цвет полоски прокрутки */
+  border-radius: 0.25em; /* Радиус скругления углов полоски прокрутки */
+}
+
+.scroll-div::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Цвет полоски прокрутки при наведении */
 }

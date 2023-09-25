@@ -1,14 +1,11 @@
-body{
+body,html{
 margin: 0;
 padding: 0;
 padding-top: 5px;
 height: 100%;
 width: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
 background: linear-gradient(to bottom left, #52f2d8, #2b71fc);
+position: relative;
 }
 input{
 padding: 5px;
@@ -23,23 +20,37 @@ position: absolute;
 cursor: pointer;
 }
 .main-container{
-position: relative;
-color: #303e47;
 display: flex;
-border-radius: 10px;
-box-shadow: 25px 25px 2px 1px rgba(0, 0, 255, .2);
-background: #c7e7fc;
-flex-direction: column;
 align-items: center;
 justify-content: center;
+
+}
+.form-container{
+position: relative;
+display: flex;
+padding: 10px;
+color: #303e47;
+box-shadow: 25px 25px 2px 1px rgba(0, 0, 255, .2);
+background: #c7e7fc;
+border-radius: 10px;
 width: 400px;
-height: 600px;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+.form-container form{
+margin-top: 20px;
+width: 271px;
+}
+.div-container{
+display: flex;
+justify-content: start;
+width: 271px;
+margin: 0;
 }
 .ul-container{
-width: 100%;
 display: flex;
 flex-direction: column;
-margin-left: 200px;
 }
 .ul-container a{
 color: #303e47;
@@ -51,12 +62,9 @@ text-decoration: underline;
 }
 .title{
 display: flex;
-position: absolute;
 width: 100%;
-border-bottom: 3px solid #303e47;;
-top: 5%;
+border-bottom: 3px solid #303e47;
 justify-content: center;
-align-items: top;
 font-size: 30px;
 font-weight: 550;
 }
@@ -73,7 +81,8 @@ color: white;
 background: rgba(0, 0, 255, .6);
 }
 .footer {
-        margin-top: 250px;
+        position: absolute;
+        bottom: 0;
         display: flex;
         justify-content: center;
         width: 100%;

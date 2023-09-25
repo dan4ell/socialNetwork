@@ -24,10 +24,10 @@ def profile(request):
     user = request.user
     form = UserChangeForm(instance=user)
     news_form = UserNewsForm(user=user)
+    user_news = News.objects.filter(user=user).order_by('-time_created')
     all_value_users = CustomUser.objects.all().count()
     user_list = CustomUser.objects.exclude(friends_user__user=user)
     user_list_count = CustomUser.objects.exclude(friends_user__user=user).count()
-    print(user_list)
     friendship = user.friends.all() # с помощью related_name = 'friends' получаем друзей юзера
     avatar_form = UserAvatarForm(instance=user)
     photos = Photos(user=user)
@@ -58,7 +58,7 @@ def profile(request):
                 return redirect('profile')
             else:
                 news.likes += 1
-                news.user_liked.add(user) # добавляем юзернейм лайкнувшего, доделатЬ!
+                news.user_liked.add(user)
                 news.save()
                 return redirect('profile')
         if 'addNews' in request.POST:
@@ -114,12 +114,13 @@ def profile(request):
                 notification.is_read = True
                 notification.save()
             return redirect('profile')
-    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications})
+    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications, 'user_news': user_news})
 
 def user_profile(request, user):
     current_user = CustomUser.objects.get(username=user)
     main_user = request.user
     news_form = UserNewsForm(user=current_user)
+    user_news = News.objects.filter(user=current_user).order_by('-time_created')
     if request.user != current_user:
         friendship = current_user.friends.all()
         photos_list = Photos.objects.filter(user=current_user)
@@ -144,15 +145,19 @@ def user_profile(request, user):
                     news.likes += 1
                     news.user_liked.add(main_user)
                     news.save()
+                    message = f'{main_user} оценил вашу запись'
+                    Notifications.objects.create(recipient=current_user, message=message)
                     url = reverse('userprofile', args=[current_user.username])
                     return HttpResponseRedirect(url)
-        return render(request, 'login_user/user_profile.html', {'user': current_user, 'friendship': friendship, 'photos_list': photos_list, 'news': news_form, 'main_user': main_user})
+        return render(request, 'login_user/user_profile.html', {'user': current_user, 'friendship': friendship, 'photos_list': photos_list, 'news': news_form, 'main_user': main_user, 'user_news': user_news})
     else:
         return redirect('profile')
 
 def notifications_user_registered(sender, user, request, **kwargs):
     UserModel = get_user_model()
     user = UserModel.objects.get(username=user.username)
+    news = f'{user} зарегистрировался'
+    create_news = News.objects.create(user=user, news=news)
     message = f'{user}, ваш аккаунт внесён в базу'
     Notifications.objects.create(recipient=user, message=message)
 

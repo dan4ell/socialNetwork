@@ -7,14 +7,20 @@
 
 {% block links %}
 <link rel="stylesheet" href="{% static 'main/css/reset_password_done.css' %}">
+<style>
+    .form-container{
+    padding-bottom: 20px;
+    margin-top: 10px;
+    }
+</style>
 {% endblock %}
 
 {% block authorization_body %}
-<div style="width: 80%;margin-top: 35px;">
+<div style="width: 80%;margin-top: 15px;">
     <p style="font-weight: 500">Спасибо за уделённое время. На ваш e-mail отправлен код подтверждения. Для завершения регистрации необходимо перейти по ссылке в сообщении
 </p>
 </div>
-    <a  href="/" class="text-center back-button">Вернуться</a>
+    <a style href="/" class="text-center back-button">Вернуться</a>
 
 
 {% endblock %}}

@@ -215,7 +215,7 @@
         </div>
         <!-- left wrapper end -->
         <!-- middle wrapper start -->
-        <div class="col-md-8 col-xl-6 middle-wrapper">
+        <div style="overflow-y:auto;height:600px;" class="col-md-8 col-xl-6 middle-wrapper">
             {% block create_news %}
                <div class="row d-none-user ">
                 <div style="background: none;border-radius: 10px;" class="col-md-12 grid-margin ">
@@ -251,8 +251,8 @@
                  </div>
             </div>
             {% endblock %}
-            {% for news in user.news.all %}
-            {% if news.news %}
+            {% if user_news %}
+            {% for news in user_news %}
             <div class="row">
                 <div style="background: none;border-radius: 10px;" class="col-md-12 grid-margin">
                     <div style="" class="card rounded">
@@ -274,7 +274,7 @@
                                         </svg>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                        <form method="post">
+                                        <form style="" method="post">
                                             {% csrf_token %}
                                             <input type="hidden" name="newsId" value="{{ news.id }}">
                                             <button class="link-hovered" type="submit" name="delete-news" style="border: none; background: none;">
@@ -283,8 +283,6 @@
   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
 </svg> <span>Удалить</span></button>
                                         </form>
-                                        <button class="dropdown-item d-flex align-items-center" >
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -324,8 +322,36 @@
                     </div>
                 </div>
             </div>
-            {% endif %}
             {% endfor %}
+            {% else %}
+                {% if request.user == user %}
+                {% else %}
+                         <div class="row ">
+                <div style="background: none;border-radius: 10px;" class="col-md-12 grid-margin ">
+                    <div style="" class="card rounded ">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <img class="img-xs rounded-circle" src="{{user.avatar.url}}" alt="">
+                                    <div class="ml">
+                                        <a class="user-link" href="{% url 'userprofile' user=user.username %}">
+                                            <p  style="margin-bottom: 0;">{{user.username}}</p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                                <p>У {{user.username}} еще нет записей</p>
+
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            {% endif %}
+            {% endif %}
         </div>
         <!-- middle wrapper end -->
         <!-- right wrapper start -->
@@ -334,7 +360,7 @@
 
             {% if photos_list %}
 
-                <div class="col-md-12 grid-margin">
+                <div class="col-md-12 grid-margin scroll-div">
                     <div class="card rounded">
                         <div id="photosBlock" class="card-body">
                             <h6 class="card-title">Фотографии</h6>
@@ -365,7 +391,7 @@
                 </div>
                 {% endif %}
 
-                  <div  class="col-md-12 grid-margin">
+                  <div  class="col-md-12 grid-margin scroll-div">
                     <div id="friendBlock" class="card rounded">
                         <div class="card-body">
                             <h6 class="card-title">Друзья</h6>
@@ -408,7 +434,7 @@
 
                 {% block recommended_friends %}
                 {% if user_list_count > 1 %}
-                <div class="col-md-12 grid-margin d-none-user">
+                <div class="col-md-12 grid-margin d-none-user scroll-div">
                     <div class="card rounded">
                         <div class="card-body">
                             <h6 class="card-title">Возможно вы знакомы</h6>
