@@ -8,6 +8,8 @@ from .models import News, CustomUser, Friendship, Photos, Notifications
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django_registration.signals import user_registered, user_activated
 from django.contrib.auth import get_user_model
+from django.views import View
+from django.utils.decorators import method_decorator
 def index(request):
     return redirect('profile')
 
@@ -19,23 +21,26 @@ def reset_is_done(request):
 def redirect_profile(request):
     return redirect('profile')
 
-@login_required
-def profile(request):
-    user = request.user
-    form = UserChangeForm(instance=user)
-    news_form = UserNewsForm(user=user)
-    user_news = News.objects.filter(user=user).order_by('-time_created')
-    all_value_users = CustomUser.objects.all().count()
-    user_list = CustomUser.objects.exclude(friends_user__user=user)
-    user_list_count = CustomUser.objects.exclude(friends_user__user=user).count()
-    friendship = user.friends.all() # с помощью related_name = 'friends' получаем друзей юзера
-    avatar_form = UserAvatarForm(instance=user)
-    photos = Photos(user=user)
-    photos_list = Photos.objects.filter(user=user) # ищем по юзеру его фото чтобы не перебирать все фото в БД
-    recipient = user
-    user_notifications = Notifications.objects.filter(recipient=recipient)
-    count_notifications = Notifications.objects.filter(recipient=recipient, is_read=False).count()
-    if request.method == 'POST':
+@method_decorator(login_required, name='dispatch')
+class ProfileView(View):
+    def get(self, request):
+        user = request.user
+        form = UserChangeForm(instance=user)
+        news_form = UserNewsForm(user=user)
+        user_news = News.objects.filter(user=user).order_by('-time_created')
+        all_value_users = CustomUser.objects.all().count()
+        user_list = CustomUser.objects.exclude(friends_user__user=user)
+        user_list_count = CustomUser.objects.exclude(friends_user__user=user).count()
+        friendship = user.friends.all()  # с помощью related_name = 'friends' получаем друзей юзера
+        avatar_form = UserAvatarForm(instance=user)
+        photos_list = Photos.objects.filter(user=user).order_by('-id')  # ищем по юзеру его фото чтобы не перебирать все фото в БД
+        user_notifications = Notifications.objects.filter(recipient=user)
+        count_notifications = Notifications.objects.filter(recipient=user, is_read=False).count()
+        data = {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications, 'user_news': user_news}
+        return render(request, 'login_user/profile.html', data)
+
+    def post(self, request):
+        user = request.user
         if 'save' in request.POST:
             form = UserChangeForm(request.POST, instance=user)
             if form.is_valid():
@@ -95,6 +100,7 @@ def profile(request):
         if 'addAvatar' in request.POST:
             form = UserAvatarForm(request.POST, request.FILES, instance=user)
             if form.is_valid():
+                photos = Photos(user=user)
                 avatar_url = request.POST.get('avatar-url')
                 photos.photos = avatar_url
                 photos.save()
@@ -114,7 +120,7 @@ def profile(request):
                 notification.is_read = True
                 notification.save()
             return redirect('profile')
-    return render(request, 'login_user/profile.html', {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications, 'user_news': user_news})
+        return redirect('profile')
 
 def user_profile(request, user):
     current_user = CustomUser.objects.get(username=user)

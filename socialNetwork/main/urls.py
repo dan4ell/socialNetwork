@@ -44,7 +44,7 @@ urlpatterns = [
     path('accounts/pw_reset_confirm/<uidb64>/<token>/', CustomResetPasswordConfirm.as_view(), name='customResetConfirm'),
     path('accounts/pw_reset_is_done', views.reset_is_done, name='resetIsDone'),
     path('accounts/profile/', views.redirect_profile), #redirect to profile without /accounts network
-    path('profile/', views.profile, name='profile'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile/<str:user>', views.user_profile, name='userprofile')
 ] + static(settings.MEDIA_URL,
            document_root=settings.MEDIA_ROOT)
