@@ -1,0 +1,104 @@
+body{
+background: #141414;
+color: white!important;
+}
+.card, rounded, .card-body{
+background: #3b3b3b!important ;
+color: #f9f9f9!important;
+border: 1px solid #656565!important;
+}
+input, textarea{
+background: #3b3b3b!important;
+color: white!important;
+}
+input:focus, textarea:focus{
+box-shadow: 0 0 4px white;
+border: 1px solid white;
+}
+.text-muted{
+color: #828282!important;
+}
+.edit_profile-button, .exit-btn{
+background: #828282!important;
+color: white!important;
+}
+.btn{
+background: #3b3b3b!important;
+color: white!important;
+}
+.btn:hover{
+color: #828282!important;
+}
+p, a{
+color: white!important;
+}
+.dropdown-menu{
+background: #828282!important;
+}
+.dropdown-item:hover{
+background: #959595!important;
+}
+.dropdown-form button{
+background: #828282!important;
+color:white!important;
+}
+.dropdown-form button:hover{
+background: #959595!important;
+}
+.edit_profile-button:hover, .exit-btn:hover{
+background: #959595!important;
+}
+.form-area::placeholder, .form-input::placeholder, input::placeholder{
+color: #d7d8db!important;
+}
+input:focus, .form-area:focus{
+outline: none!important;
+}
+.profile-page .profile-header .cover .gray-shade {
+    background: linear-gradient(rgba(255, 255, 255, 0.1), #fff 150%);
+}
+.header-links{
+background: #3b3b3b!important;
+}
+form{
+color: white!important;
+}
+#notifications-dark{
+background: #3b3b3b!important;
+}
+.header-links{
+color: #959595!important;
+}
+.header-link-item a{
+color: #959595!important;
+}
+.header-link-item a:hover{
+color: white!important;
+}
+.header-link-item:hover .feather{
+stroke: white!important;
+}
+.navbar{
+background: #3b3b3b!important;
+}
+.navbar-brand text{
+fill: white;
+}
+.form-control:focus{
+box-shadow: 0 0 5px white;
+border: 1px solid white;
+}
+.container-fluid button svg{
+fill:white!important;
+}
+#theme{
+color: white!important;
+}
+
+
+.news{
+background: #3b3b3b!important;
+}
+.news-content .status-link{
+color: #0d6efd!important;
+}

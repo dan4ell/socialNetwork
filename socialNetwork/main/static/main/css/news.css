@@ -1,0 +1,105 @@
+html{
+}
+body{
+margin: 0;
+padding: 0;
+zoom: 125%;
+height: 100%;
+min-height: 1000px;
+padding-bottom: 100px;
+background:linear-gradient(to bottom left, #52f2d8, #2b71fc);
+}
+nav{
+position: fixed!important;
+top: 0;
+z-index: 9999;
+width: 100%;
+height: 55px;
+}
+nav .container-fluid{
+min-width: 750px;
+}
+.nav-container{
+display: flex;
+align-items: center;
+width: 70%;
+}
+.default-button{
+border-radius: 5px;
+background: rgba(0, 0, 255, .2);
+height: 30px;
+padding: 12px;
+display: flex;
+align-items: center;
+font-size: .8em;
+font-weight: 500;
+border: none;
+}
+#search{
+font-size: .8em;
+}
+.default-button:hover{
+color: white;
+background: rgba(0, 0, 255, .6);
+}
+.main-container{
+display: flex;
+justify-content:center;
+align-items: center;
+width: 600px;
+padding: 10px;
+margin-top: 100px;
+border-radius: 10px;
+flex-direction: column;
+
+}
+.news{
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 10px;
+border-radius: 10px;
+flex-direction: column;
+background: #fafafa;
+width: 500px;
+margin-top: 20px;
+}
+.news-title{
+display: flex;
+padding: 10px;
+padding-bottom: 0;
+margin-bottom: 10px;
+}
+.news-title h4{
+font-weight: 900;
+}
+.news img{
+border-radius: 10px;
+max-width: 100%;
+float: left; /* Выравнивание изображения по левому краю */
+margin-right: 10px;
+}
+.news p{
+font-size: .8em;
+}
+.news-footer{
+width: 100%;
+margin-top: 15px;
+display: flex;
+}
+.news-likes{
+width: 50%;
+}
+.news-date{
+width: 50%;
+display: flex;
+justify-content: flex-end;
+}
+.news-form{
+width: 100%;
+display: flex;
+justify-content: flex-start;
+}
+.status-link{
+text-decoration: none;
+}

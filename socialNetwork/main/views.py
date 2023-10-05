@@ -4,12 +4,14 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import UserChangeForm, UserNewsForm, UserAvatarForm
-from .models import News, CustomUser, Friendship, Photos, Notifications
+from .models import News, CustomUser, Friendship, Photos, Notifications, Feed
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django_registration.signals import user_registered, user_activated
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.utils.decorators import method_decorator
+from bs4 import BeautifulSoup
+import requests
 def index(request):
     return redirect('profile')
 
@@ -36,7 +38,18 @@ class ProfileView(View):
         photos_list = Photos.objects.filter(user=user).order_by('-id')  # ищем по юзеру его фото чтобы не перебирать все фото в БД
         user_notifications = Notifications.objects.filter(recipient=user)
         count_notifications = Notifications.objects.filter(recipient=user, is_read=False).count()
-        data = {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications, 'user_news': user_news}
+        theme = user.themes
+        data = {'user': user, 'form': form, 'news_form': news_form, 'user_list': user_list, 'user_list_count': user_list_count, 'friendship': friendship, 'avatar_form': avatar_form, 'photos_list': photos_list, 'all_value_users': all_value_users, 'user_notifications': user_notifications, 'count_notifications': count_notifications, 'user_news': user_news, 'theme': theme}
+        if 'search-btn' in request.GET:
+            username = request.GET.get('search')
+            try:
+                users = CustomUser.objects.get(username__icontains=username)
+                url = reverse('userprofile', args=[users.username])
+                return HttpResponseRedirect(url)
+            except Exception as e:
+                users = CustomUser.objects.filter(username__icontains=username)
+                data['users'] = users
+                return render(request, 'login_user/profile.html', data)
         return render(request, 'login_user/profile.html', data)
 
     def post(self, request):
@@ -53,6 +66,17 @@ class ProfileView(View):
                 return redirect('profile')
             else:
                 print(form.errors)
+        if 'switch-theme' in request.POST:
+            files = CustomUser.objects.filter(username=user.username)
+            for items in files:
+                if items.themes == 'Dark':
+                    items.themes = 'Classic'
+                    items.save()
+                    return redirect('profile')
+                else:
+                    items.themes = 'Dark'
+                    items.save()
+                    return redirect('profile')
         if 'likeBtn' in request.POST:
             news_id = request.POST.get('news_id')
             news = News.objects.get(id=news_id)
@@ -122,9 +146,85 @@ class ProfileView(View):
             return redirect('profile')
         return redirect('profile')
 
+@method_decorator(login_required, name='dispatch')
+class NewsView(View):
+    def get(self, request):
+        user = request.user
+        theme = user.themes
+        feeds = Feed.objects.all()
+        data = {'user': user, 'feeds': feeds, 'theme': theme}
+        if 'search-btn' in request.GET:
+            username = request.GET.get('search')
+            try:
+                users = CustomUser.objects.get(username__icontains=username)
+                url = reverse('userprofile', args=[users.username])
+                return HttpResponseRedirect(url)
+            except Exception as e:
+                users = CustomUser.objects.filter(username__icontains=username)
+                data['users'] = users
+                return render(request, 'login_user/news.html', data)
+        return render(request, 'login_user/news.html', data)
+    def post(self, request):
+        if 'parse' in request.POST:
+            return self.parse(request)
+        if 'clean' in request.POST:
+            all_news = Feed.objects.all()
+            for news in all_news:
+                news.delete()
+        if 'likeBtn' in request.POST:
+            user = request.user
+            feed_id = request.POST.get('feed_id')
+            current_feed = Feed.objects.get(id=feed_id)
+            if user in current_feed.user_liked.all():
+                current_feed.user_liked.remove(user)
+                current_feed.likes -= 1
+                current_feed.save()
+                return redirect('news')
+            else:
+                current_feed.user_liked.add(user)
+                current_feed.likes += 1
+                current_feed.save()
+                return redirect('news')
+        if 'switch-theme' in request.POST:
+            theme = CustomUser.objects.filter(username=request.user.username)
+            for item in theme:
+                if item.themes == 'Dark':
+                    item.themes = 'Classic'
+                    item.save()
+                    return redirect('news')
+                else:
+                    item.themes = 'Dark'
+                    item.save()
+                    return redirect('news')
+        return redirect('news')
+
+    def parse(self, request):
+        url = requests.get('https://lenta.ru/rubrics/culture/')
+        soup = BeautifulSoup(url.text, 'html.parser')
+        news_links = soup.find_all('a', class_='_longgrid')
+        for news in news_links:
+            link = news['href']
+            news_url = requests.get('https://lenta.ru' + link)
+            new_soup = BeautifulSoup(news_url.text, 'html.parser')
+            news_title = new_soup.find('span', class_='topic-body__title')
+            news_content = new_soup.find_all('p', class_='topic-body__content-text')
+            news_pictures = new_soup.find('img', class_='picture__image')
+            if news_pictures is not None:
+                news_pictures_url = news_pictures['src']
+            #base
+            feed = Feed()
+            feed.news_title = news_title.text
+            for i in news_content:
+                feed.news_content += i.text + '\n'
+            feed.news_pictures = news_pictures_url
+            feed.save()
+        return redirect('news')
+
+
 def user_profile(request, user):
     current_user = CustomUser.objects.get(username=user)
     main_user = request.user
+    theme = main_user.themes
     news_form = UserNewsForm(user=current_user)
     user_news = News.objects.filter(user=current_user).order_by('-time_created')
     if request.user != current_user:
@@ -155,7 +255,7 @@ def user_profile(request, user):
                     Notifications.objects.create(recipient=current_user, message=message)
                     url = reverse('userprofile', args=[current_user.username])
                     return HttpResponseRedirect(url)
-        return render(request, 'login_user/user_profile.html', {'user': current_user, 'friendship': friendship, 'photos_list': photos_list, 'news': news_form, 'main_user': main_user, 'user_news': user_news})
+        return render(request, 'login_user/user_profile.html', {'user': current_user, 'friendship': friendship, 'photos_list': photos_list, 'news': news_form, 'main_user': main_user, 'user_news': user_news, 'theme': theme})
     else:
         return redirect('profile')
 

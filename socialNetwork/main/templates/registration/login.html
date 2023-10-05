@@ -7,7 +7,7 @@
 {% block authorization_body %}
             {% if user.is_authenticated %}
 
-            <h5 style="margin-top: -250px;"><span style="color: #2b71fc">{{ user.username }}</span>, Вы же уже авторизорваны.<br>Впрочем, всегда можно <a href="{% url 'customLogout' %}">выйти</a>.<br/><br/></h5>
+            <h5 style=""><a href="/" style="color: #2b71fc">{{ user.username }}</a>, Вы же уже авторизорваны.<br>Впрочем, всегда можно <a href="{% url 'customLogout' %}">выйти</a>.<br/><br/></h5>
             {% else %}
 
             {% if form.non_field_errors %}
@@ -25,7 +25,7 @@
                 </dd>
             {% endfor %}
             </dl>
-                <button class="login-button" type="submit">Войти в socialNetwork</button>
+                <button class="login-button" type="submit">Войти в Friendspace</button>
             </form>
 
             <script type="text/javascript">

@@ -9,18 +9,82 @@
     <script src="{%static 'main/js/edit_profile.js' %}" defer></script>
     {% block links %} {% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    {% if theme == 'Dark' %}
+    <link rel="stylesheet" href="{% static 'main/css/dark-theme.css' %}">
+    {% endif %}
     <title>{{user.username}}</title>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <button type="button" style="margin-left:20px;border:none;background:none;display: flex;flex-direction:row;align-items:center;" data-bs-toggle="dropdown" aria-expanded="true">
+              <img style="width: 45px;height:45px;border-radius: 50px;" src="{{ request.user.avatar.url }}" alt="">
+              <svg style="margin-left: 5px;" xmlns="http://www.w3.org/2000/svg" width="17" height="13" fill="black" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z"/>
+                </svg>
+
+      </button>
+      <ul style="margin-left: 20px;font-size: .8em;" class="dropdown-menu nav-item">
+          <form method="post" >
+              {% csrf_token %}
+              <a class="dropdown-item" style="display: flex;align-items: center;color:#303e47;text-decoration:none;" href="/">
+                            <img src="{{ request.user.avatar.url }}" style="width: 40px;height:40px;border-radius: 50px;" alt="">
+                            <p style="margin-top: 10px;margin-left: 5px;">{{request.user.username}}</p>
+                        </a>
+                        <li><button name="switch-theme" type="submit" id="theme" title="Изменить тему" class="dropdown-item d-flex text-center">
+                            Тема:
+                            {% if theme == 'Dark' %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="margin-left: 10px;" class="bi bi-moon-stars" viewBox="0 0 16 16">
+                              <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"/>
+                              <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                            </svg>
+                            {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="margin-left: 10px;" class="bi bi-sun" viewBox="0 0 16 16">
+                              <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                            </svg>
+                            {% endif %}
+                        </button></li>
+                        <li><a class="dropdown-item" href="#">Настройки</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'customLogout' %}">Выйти</a></li>
+          </form>
+
+                      </ul>
+      <div class="nav-container">
+          <a class="navbar-brand" href="{% url 'news' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="130" height="30" viewBox="0 0 130 40">
+              <circle cx="20" cy="20" r="18" fill="#2b71fc"/>
+              <text x="15" y="27" fill="#FFFFFF" font-size="20">F</text>
+              <text x="40" y="27" fill="#303e47" font-size="20">riendspace</text>
+            </svg>
+          </a>
+        <form style="width: 250px; height: 30px;" class="d-flex" role="search" method="get">
+          <input class="form-control me-2" list="username-list" name="search" id="search" type="search" placeholder="Найди друга" aria-label="Search">
+          <button class="default-button exit-btn" name="search-btn" type="submit">Поиск</button>
+            {% if users %}
+                <datalist id="username-list">
+                    {% for u in users %}
+                    <option value="{{ u.username }}">
+                    {% endfor %}
+                </datalist>
+            {% endif %}
+        </form>
+</div>
+</div>
+</nav>
 <div  class="container">
 <div  class="profile-page tx-13">
     <div  class="row">
-        <div  class="col-12 grid-margin">
+        <div style="min-width: 1010px;"  class="col-12 grid-margin">
             <div style="border: none;" class="profile-header">
                 <div class="cover">
                     <div class="gray-shade"></div>
                     <figure>
+                        {% if theme != 'Dark' %}
                         <img style="height: 200px;" src="https://bootdey.com/img/Content/bg1.jpg" class="img-fluid" alt="profile cover">
+                        {% else %}
+                        <img style="height: 200px;" src="{% static 'main/img/dark-theme-profile.jpg' %}" class="img-fluid" alt="profile cover">
+                        {% endif %}
                     </figure>
                     <div class="cover-body d-flex justify-content-between align-items-center">
                         <div style="display: flex;justify-content:center;position: relative;align-items: center;">
@@ -49,11 +113,12 @@
                 <div class="header-links d-none-user">
                     {% block header_links %}
                     <ul class="links d-flex align-items-center mt-3 mt-md-0 ">
-                        <li class="header-link-item d-flex align-items-center active">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-columns mr-1 icon-md">
-                                <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"></path>
+                        <li class="header-link-item d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-newspaper feather" viewBox="0 0 16 16">
+                              <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+                              <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
                             </svg>
-                            <a class="pt-1px d-none d-md-block" href="#">Timeline</a>
+                            <a class="pt-1px d-none d-md-block" href="{% url 'news' %}">Новости</a>
                         </li>
                         <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user mr-1 icon-md">
@@ -85,7 +150,7 @@
                                   {% endif %}
 
                               </a>
-                              <form method="post" style="width: 500px; font-size: .8em; max-height:300px; overflow: auto;" class="dropdown-menu p-4">
+                              <form method="post" style="width: 500px; font-size: .8em; max-height:300px; overflow: auto;" id="notifications-dark" class="dropdown-menu p-4">
                                   {% csrf_token %}
                                   <p style="font-size: 1.1em; font-weight: 550;" class="form-label">Ваши уведомления:</p>
                                   {% for notification in user_notifications %}
@@ -106,13 +171,6 @@
                                 <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
                             <a class="pt-1px d-none d-md-block" id="myPhotos" href="#">Фотографии</a>
-                        </li>
-                        <li class="header-link-item ml-3 pl-3 border-left d-flex align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video mr-1 icon-md">
-                                <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                            </svg>
-                            <a class="pt-1px d-none d-md-block" href="#">Видео</a>
                         </li>
                     </ul>
                     {% endblock %}
@@ -159,7 +217,7 @@
                         <h6 class="card-title mb-0">Информация</h6>
                         <div class="dropdown">
                             <button class="btn p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal icon-lg text-muted pb-3px">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal icon-lg pb-3px">
                                     <circle cx="12" cy="12" r="1"></circle>
                                     <circle cx="19" cy="12" r="1"></circle>
                                     <circle cx="5" cy="12" r="1"></circle>
@@ -174,7 +232,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye icon-sm mr-2">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
-                                    </svg> <span class="dropdown-text">View all</span></a>
+                                    </svg> <span class="dropdown-text">Посмотреть полностью</span></a>
                             </div>
                         </div>
                     </div>
@@ -274,10 +332,10 @@
                                         </svg>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                        <form style="" method="post">
+                                        <form class="dropdown-form" style="" method="post">
                                             {% csrf_token %}
                                             <input type="hidden" name="newsId" value="{{ news.id }}">
-                                            <button class="link-hovered" type="submit" name="delete-news" style="border: none; background: none;">
+                                            <button class="link-hovered text-start" type="submit" name="delete-news" style="border: none; background: none;width: 100%;">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
@@ -299,7 +357,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart icon-md">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                     </svg>
-                                    <p class="d-none d-md-block ml-2">{{news.likes}}</p>
+                                    <p  style="margin-left: 5px;" class="d-none d-md-block ml-2">{{news.likes}}</p>
                                 </button>
                                 <button type="button" style="border: none; background: none;height: 30px;margin-left: 10px;" class="d-flex align-items-top text-muted mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square icon-md">
@@ -476,7 +534,7 @@
 
 <!--modal window here-->
 <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div style="margin-top: 100px;" class="modal-dialog">
     <div class="modal-content">
        <form enctype="multipart/form-data" method="post">
            {% csrf_token %}

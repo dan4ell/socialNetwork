@@ -45,6 +45,7 @@ urlpatterns = [
     path('accounts/pw_reset_is_done', views.reset_is_done, name='resetIsDone'),
     path('accounts/profile/', views.redirect_profile), #redirect to profile without /accounts network
     path('profile/', views.ProfileView.as_view(), name='profile'),
-    path('profile/<str:user>', views.user_profile, name='userprofile')
+    path('profile/<str:user>', views.user_profile, name='userprofile'),
+    path('news/', views.NewsView.as_view(), name='news')
 ] + static(settings.MEDIA_URL,
            document_root=settings.MEDIA_ROOT)

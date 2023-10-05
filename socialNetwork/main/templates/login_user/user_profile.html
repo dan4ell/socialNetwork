@@ -2,6 +2,9 @@
 {% load static %}
 {% block links %}
 <link rel="stylesheet" href="{% static 'main/css/user_profile.css' %}">
+{% if theme == 'Dark' %}
+    <link rel="stylesheet" href="{% static 'main/css/dark-theme.css' %}">
+{% endif %}
 {% endblock %}
 {% block create_news %}
 <div class="row">

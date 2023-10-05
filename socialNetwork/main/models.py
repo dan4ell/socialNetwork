@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, related_name='custom_user_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='custom_user_set', blank=True)
     avatar = models.ImageField(upload_to='main/avatars/', null=True, blank=True, default='main/avatars/default-avatar.png')
+    themes = models.CharField(blank=True, max_length=20, default='Classic')
     # для работы с медиа добавляем media в settings и теперь в html шаблонах доступны пути
 
 class News(models.Model):
@@ -45,3 +46,13 @@ class Notifications(models.Model):
 
     def __str__(self):
         return self.message
+
+class Feed(models.Model):
+    news_title = models.CharField(max_length=250)
+    news_content = models.TextField()
+    news_pictures = models.URLField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(default=0)
+    user_liked = models.ManyToManyField(CustomUser, blank=True)
+    def __str__(self):
+        return self.news_title
